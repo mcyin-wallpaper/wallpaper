@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Wallpaper时光机 - APP页</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            background-image: url('{{backgroundImage}}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        document.addEventListener('plusready', function () {
+            plus.navigator.hideSystemNavigation();
+            plus.navigator.setUserAgent(navigator.userAgent);
+            var mainWebview = plus.webview.create('https://{{domain}}', 'main', {
+                width: '100%',
+                height: '100%',
+                top: '0px',
+                left: '0px',
+                bottom: '0px',
+                right: '0px',
+            });
+            var lastBackTime = 0;
+            plus.key.addEventListener('backbutton', function () {
+                mainWebview.canBack(function (result) {
+                    if (result.canBack) {
+                        mainWebview.back();
+                    } else {
+                        var currentTime = Date.now();
+                        if (currentTime - lastBackTime > 1000) {
+                            lastBackTime = currentTime;
+                            plus.nativeUI.toast('再按一次退出应用');
+                        } else {
+                            clearAppCache(function () {
+                                plus.runtime.quit();
+                            });
+                        }
+                    }
+                });
+            }, false);
+            mainWebview.show();
+        }, false);
+        function clearAppCache(callback) {
+            const tasks = [];
+            const errors = [];
+            function addTask(task) {
+                tasks.push(task);
+            }
+            function clearCache() {
+                return new Promise((resolve) => {
+                    plus.cache.clear(() => {
+                        console.log('应用缓存清理完成');
+                        resolve();
+                    }, (error) => {
+                        const msg = '应用缓存清理失败：' + error.message;
+                        console.error(msg);
+                        errors.push(msg);
+                        resolve();
+                    });
+                });
+            }
+            function clearDownloads() {
+                return new Promise((resolve) => {
+                    plus.io.requestFileSystem(plus.io.PUBLIC_DOWNLOADS, (fs) => {
+                        const dirReader = fs.root.createReader();
+                        dirReader.readEntries((entries) => {
+                            if (entries.length === 0) {
+                                console.log('downloads文件夹为空，无需清理');
+                                resolve();
+                                return;
+                            }
+                            let deletedCount = 0;
+                            const totalCount = entries.length;
+                            function deleteEntry(entry) {
+                                const deletePromise = new Promise((resolveDelete) => {
+                                    if (entry.isDirectory) {
+                                        entry.removeRecursively(() => {
+                                            console.log('删除目录完成：' + entry.name);
+                                            resolveDelete();
+                                        }, (error) => {
+                                            const msg = '删除目录失败：' + entry.name + '，错误：' + error.message;
+                                            console.error(msg);
+                                            errors.push(msg);
+                                            resolveDelete();
+                                        });
+                                    } else {
+                                        entry.remove(() => {
+                                            console.log('删除文件完成：' + entry.name);
+                                            resolveDelete();
+                                        }, (error) => {
+                                            const msg = '删除文件失败：' + entry.name + '，错误：' + error.message;
+                                            console.error(msg);
+                                            errors.push(msg);
+                                            resolveDelete();
+                                        });
+                                    }
+                                });
+                                deletePromise.then(() => {
+                                    deletedCount++;
+                                    if (deletedCount >= totalCount) {
+                                        console.log('downloads文件夹清理完成');
+                                        resolve();
+                                    }
+                                });
+                            }
+                            entries.forEach(deleteEntry);
+                        }, (error) => {
+                            const msg = '读取downloads文件夹失败：' + error.message;
+                            console.error(msg);
+                            errors.push(msg);
+                            resolve();
+                        });
+                    }, (error) => {
+                        const msg = '获取downloads文件系统失败：' + error.message;
+                        console.error(msg);
+                        errors.push(msg);
+                        resolve();
+                    });
+                });
+            }
+            addTask(clearCache());
+            addTask(clearDownloads());
+            Promise.all(tasks).then(() => {
+                if (errors.length > 0) {
+                    console.log('部分清理任务执行过程中出现错误，但已完成所有可能的清理');
+                } else {
+                    console.log('所有数据清理完成');
+                }
+                callback();
+            });
+        }
+    </script>
+</body>
+
+</html>
