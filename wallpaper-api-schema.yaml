@@ -1,0 +1,351 @@
+openapi: 3.0.0
+info:
+  title: Wallpaper API
+  version: 1.0.0
+paths:
+  /:
+    servers:
+      - url: https://wallpaper.mcyin.com
+    get:
+      operationId: getWallpapersRoot
+      parameters:
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/SearchKeyword'
+        - $ref: '#/components/parameters/EnddateOptional'
+      responses:
+        '200':
+          description: OK
+  /detail:
+    servers:
+      - url: https://wallpaper.mcyin.com
+    get:
+      operationId: getWallpapersDetail
+      parameters:
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/SearchKeyword'
+        - $ref: '#/components/parameters/EnddateOptional'
+      responses:
+        '200':
+          description: OK
+  /detail/:
+    servers:
+      - url: https://wallpaper.mcyin.com
+    get:
+      operationId: getWallpapersDetailTrailing
+      parameters:
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/SearchKeyword'
+        - $ref: '#/components/parameters/EnddateOptional'
+      responses:
+        '200':
+          description: OK
+  /assets/entries/{filename}:
+    servers:
+      - url: https://wallpaper.mcyin.com
+    get:
+      operationId: getEntryAsset
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+            maxLength: 100
+            pattern: '^[\w\-.]+\.js$'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/SearchKeyword'
+        - $ref: '#/components/parameters/EnddateOptional'
+      responses:
+        '200':
+          description: OK
+  /api/search:
+    servers:
+      - url: https://wallpaper.mcyin.com
+    get:
+      operationId: searchWallpapersApiGet
+      parameters:
+        - $ref: '#/components/parameters/SearchKeyword'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+    post:
+      operationId: searchWallpapersApiPost
+      requestBody:
+        $ref: '#/components/requestBodies/SearchRequest'
+      responses:
+        '200':
+          description: OK
+  /wallpaper/search:
+    servers:
+      - url: https://api.mcyin.com
+      - url: https://wallpaper.mcyin.com
+    get:
+      operationId: searchWallpapersWpGet
+      parameters:
+        - $ref: '#/components/parameters/SearchKeyword'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+    post:
+      operationId: searchWallpapersWpPost
+      requestBody:
+        $ref: '#/components/requestBodies/SearchRequest'
+      responses:
+        '200':
+          description: OK
+  /api/detail:
+    servers:
+      - url: https://wallpaper.mcyin.com
+    get:
+      operationId: getDetailApiGet
+      parameters:
+        - $ref: '#/components/parameters/Enddate'
+      responses:
+        '200':
+          description: OK
+    post:
+      operationId: getDetailApiPost
+      requestBody:
+        $ref: '#/components/requestBodies/EnddateRequest'
+      responses:
+        '200':
+          description: OK
+  /wallpaper/detail:
+    servers:
+      - url: https://api.mcyin.com
+      - url: https://wallpaper.mcyin.com
+    get:
+      operationId: getDetailWpGet
+      parameters:
+        - $ref: '#/components/parameters/Enddate'
+      responses:
+        '200':
+          description: OK
+    post:
+      operationId: getDetailWpPost
+      requestBody:
+        $ref: '#/components/requestBodies/EnddateRequest'
+      responses:
+        '200':
+          description: OK
+  /api/view:
+    servers:
+      - url: https://wallpaper.mcyin.com
+    get:
+      operationId: getViewApiGet
+      parameters:
+        - $ref: '#/components/parameters/Enddate'
+      responses:
+        '200':
+          description: OK
+    post:
+      operationId: getViewApiPost
+      requestBody:
+        $ref: '#/components/requestBodies/EnddateRequest'
+      responses:
+        '200':
+          description: OK
+  /wallpaper/view:
+    servers:
+      - url: https://api.mcyin.com
+      - url: https://wallpaper.mcyin.com
+    get:
+      operationId: getViewWpGet
+      parameters:
+        - $ref: '#/components/parameters/Enddate'
+      responses:
+        '200':
+          description: OK
+    post:
+      operationId: getViewWpPost
+      requestBody:
+        $ref: '#/components/requestBodies/EnddateRequest'
+      responses:
+        '200':
+          description: OK
+  /api/update:
+    servers:
+      - url: https://wallpaper.mcyin.com
+    get:
+      operationId: updateApiGet
+      responses:
+        '200':
+          description: OK
+    post:
+      operationId: updateApiPost
+      responses:
+        '200':
+          description: OK
+  /wallpaper/update:
+    servers:
+      - url: https://api.mcyin.com
+      - url: https://wallpaper.mcyin.com
+    get:
+      operationId: updateWpGet
+      responses:
+        '200':
+          description: OK
+    post:
+      operationId: updateWpPost
+      responses:
+        '200':
+          description: OK
+  /api/bing-hp:
+    servers:
+      - url: https://wallpaper.mcyin.com
+    get:
+      operationId: getBingHpApiGet
+      parameters:
+        - $ref: '#/components/parameters/Mkt'
+      responses:
+        '200':
+          description: OK
+    post:
+      operationId: getBingHpApiPost
+      requestBody:
+        $ref: '#/components/requestBodies/BingHpRequest'
+      responses:
+        '200':
+          description: OK
+  /wallpaper/bing-hp:
+    servers:
+      - url: https://api.mcyin.com
+      - url: https://wallpaper.mcyin.com
+    get:
+      operationId: getBingHpWpGet
+      parameters:
+        - $ref: '#/components/parameters/Mkt'
+      responses:
+        '200':
+          description: OK
+    post:
+      operationId: getBingHpWpPost
+      requestBody:
+        $ref: '#/components/requestBodies/BingHpRequest'
+      responses:
+        '200':
+          description: OK
+components:
+  parameters:
+    SearchKeyword:
+      name: search
+      in: query
+      schema:
+        type: string
+        maxLength: 100
+        pattern: '^[\p{Han}a-zA-Z0-9 \-_.,!?]*$'
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 30
+    Size:
+      name: size
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 6
+        default: 1
+    Enddate:
+      name: enddate
+      in: query
+      required: true
+      schema:
+        type: string
+        pattern: '^\d{8}$'
+    EnddateOptional:
+      name: enddate
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: '^\d{8}$'
+    Mkt:
+      name: mkt
+      in: query
+      schema:
+        type: string
+        maxLength: 10
+        pattern: '^[a-z]{2}-[A-Z]{2}$'
+        default: zh-CN
+  requestBodies:
+    SearchRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SearchRequest'
+    EnddateRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EnddateRequest'
+    BingHpRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BingHpRequest'
+  schemas:
+    Enddate:
+      oneOf:
+        - type: integer
+          minimum: 10000000
+          maximum: 99999999
+        - type: string
+          pattern: '^\d{8}$'
+    SearchRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        search:
+          type: string
+          maxLength: 100
+          pattern: '^[\p{Han}a-zA-Z0-9 \-_.,!?]*$'
+        page:
+          type: integer
+          minimum: 1
+          default: 1
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 30
+    EnddateRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - enddate
+      properties:
+        enddate:
+          $ref: '#/components/schemas/Enddate'
+    BingHpRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        mkt:
+          type: string
+          maxLength: 10
+          pattern: '^[a-z]{2}-[A-Z]{2}$'
+          default: zh-CN

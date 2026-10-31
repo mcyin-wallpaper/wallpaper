@@ -1,0 +1,6 @@
+{
+    "scripts": {
+        "pages": "node scripts/pages.js",
+        "workers": "node scripts/pages.js && bash scripts/workers.sh"
+    }
+}
